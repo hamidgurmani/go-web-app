@@ -72,7 +72,10 @@ jobs:
 
     - name: Update Helm values
       run: |
-        sed -i 's/tag:.*/tag: "${{ github.sha }}"/' helm/go-web-app-chart/values.yaml
+        sed -i "s/tag:.*/tag: \"${GITHUB_SHA}\"/" helm/go-web-app-chart/values.yaml
+
+    - name: Debug values.yaml
+      run: cat helm/go-web-app-chart/values.yaml      
 
     - name: Commit changes
       run: |
