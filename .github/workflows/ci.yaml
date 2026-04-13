@@ -11,71 +11,44 @@ jobs:
 
   build-test:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Setup Go
-      uses: actions/setup-go@v5
+    - uses: actions/checkout@v4
+    - uses: actions/setup-go@v5
       with:
         go-version: '1.22'
-
-    - name: Build
-      run: go build -o main
-
-    - name: Test
-      run: go test ./...
+    - run: go build -o main
+    - run: go test ./...
 
   code-analysis:
     runs-on: ubuntu-latest
     needs: build-test
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Run Go Vet
-      run: go vet ./...
-
----
+    - uses: actions/checkout@v4
+    - run: go vet ./...
 
   docker:
     runs-on: ubuntu-latest
     needs: code-analysis
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Login to DockerHub
-      uses: docker/login-action@v3
+    - uses: actions/checkout@v4
+    - uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Build Image
-      run: docker build -t $IMAGE_NAME:${{ github.sha }} .
-
-    - name: Push Image
-      run: docker push $IMAGE_NAME:${{ github.sha }}
-
----
+    - run: docker build -t $IMAGE_NAME:${{ github.sha }} .
+    - run: docker push $IMAGE_NAME:${{ github.sha }}
 
   update-helm:
     runs-on: ubuntu-latest
     needs: docker
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
+    - uses: actions/checkout@v4
     - name: Update Helm values
       run: |
         sed -i "s/tag:.*/tag: \"${GITHUB_SHA}\"/" helm/go-web-app-chart/values.yaml
 
-    - name: Debug values.yaml
-      run: cat helm/go-web-app-chart/values.yaml      
+    - name: Debug after update
+      run: cat helm/go-web-app-chart/values.yaml
 
     - name: Commit changes
       run: |
