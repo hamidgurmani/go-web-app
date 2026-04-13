@@ -1,0 +1,8 @@
+# Global settings applicable across multiple components
+replicaCount: 1
+
+image:
+  repository: https://github.com/iam-veeramalla/go-web-app.git
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v1"
