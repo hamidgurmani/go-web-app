@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  repository: https://github.com/iam-veeramalla/go-web-app.git
+  repository: hamid009/go-web-app
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v1"
+  tag: "latest"
